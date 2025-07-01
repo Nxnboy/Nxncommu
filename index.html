@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>เช็คยอดนักเรียนจ่าอากาศเหล่าทหารสื่อสาร</title>
+    <style>
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0f0f0 100%);
+            margin: 0;
+        }
+        .container { 
+            max-width: 440px; 
+            margin: 48px auto; 
+            background: #fff; 
+            padding: 32px 28px 24px 28px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 24px #0002; 
+            position: relative;
+        }
+        .header-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .logo {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            margin-right: 16px;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 2px 8px #0001;
+        }
+        .title-text {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #2d3a4a;
+            letter-spacing: 1px;
+        }
+        h2 {
+            text-align: center;
+            color: #2d3a4a;
+            margin-top: 0;
+        }
+        .hidden { display: none; }
+        input, button { 
+            width: 100%; 
+            margin: 8px 0; 
+            padding: 10px; 
+            border-radius: 6px;
+            border: 1px solid #cfd8dc;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        input[type="number"] { width: 80px; }
+        input:focus { outline: 2px solid #6c63ff; }
+        button { 
+            background: linear-gradient(90deg, #6c63ff 60%, #5eead4 100%);
+            color: #fff; 
+            border: none; 
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #5eead4 0%, #6c63ff 100%);
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 16px; 
+            background: #f9fafb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td { 
+            border: 1px solid #e0e0e0; 
+            padding: 10px 6px; 
+            text-align: center; 
+        }
+        th {
+            background: #e0e7ff;
+            color: #2d3a4a;
+        }
+        tr:nth-child(even) td {
+            background: #f3f6fb;
+        }
+        .logout-btn { 
+            margin-top: 24px; 
+            background: #ef4444;
+            background: linear-gradient(90deg, #ef4444 60%, #fbbf24 100%);
+        }
+        .logout-btn:hover {
+            background: linear-gradient(90deg, #fbbf24 0%, #ef4444 100%);
+        }
+        #login-error, #register-error {
+            min-height: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-bar">
+            <img class="logo" src="https://atts.rtaf.mi.th/images/image/main-site/atts_logo_resize.png" alt="ATTS Logo">
+            <span class="title-text">โรงเรียนจ่าอากาศเหล่าทหารสื่อสาร<br>กองทัพอากาศ</span>
+        </div>
+        <!-- Login Form -->
+        <div id="login-page">
+            <h2>เข้าสู่ระบบ</h2>
+            <input type="text" id="login-username" placeholder="ชื่อผู้ใช้">
+            <input type="password" id="login-password" placeholder="รหัสผ่าน">
+            <button onclick="login()">เข้าสู่ระบบ</button>
+            <button onclick="showRegister()">ลงทะเบียน</button>
+            <div id="login-error" style="color:red;"></div>
+        </div>
+        <!-- Register Form -->
+        <div id="register-page" class="hidden">
+            <h2>ลงทะเบียน</h2>
+            <input type="text" id="register-username" placeholder="ชื่อผู้ใช้">
+            <input type="password" id="register-password" placeholder="รหัสผ่าน">
+            <button onclick="register()">สมัครสมาชิก</button>
+            <button onclick="showLogin()">กลับสู่เข้าสู่ระบบ</button>
+            <div id="register-error" style="color:red;"></div>
+        </div>
+        <!-- Main Page -->
+        <div id="main-page" class="hidden">
+            <h2>เช็คยอดนักเรียนจ่าอากาศเหล่าทหารสื่อสาร</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ตอน</th>
+                        <th>ยอดเดิม</th>
+                        <th>ยอดคงเหลือ</th>
+                        <th>ยอดจำหน่าย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ส.ตอนที่1</td>
+                        <td id="orig1">0</td>
+                        <td><input type="number" id="remain1" min="0" value="0" onchange="updateShortage(1)"></td>
+                        <td id="short1">0</td>
+                    </tr>
+                    <tr>
+                        <td>ส.ตอนที่2</td>
+                        <td id="orig2">0</td>
+                        <td><input type="number" id="remain2" min="0" value="0" onchange="updateShortage(2)"></td>
+                        <td id="short2">0</td>
+                    </tr>
+                    <tr>
+                        <td>ส.ตอนที่3</td>
+                        <td id="orig3">0</td>
+                        <td><input type="number" id="remain3" min="0" value="0" onchange="updateShortage(3)"></td>
+                        <td id="short3">0</td>
+                    </tr>
+                    <tr>
+                        <td>ส.คอม</td>
+                        <td id="orig4">0</td>
+                        <td><input type="number" id="remain4" min="0" value="0" onchange="updateShortage(4)"></td>
+                        <td id="short4">0</td>
+                    </tr>
+                    <!-- แถวสรุปยอด -->
+                    <tr style="font-weight:bold;background:#f5f5f5;">
+                        <td>รวม</td>
+                        <td id="sum-orig">0</td>
+                        <td id="sum-remain">0</td>
+                        <td id="sum-short">0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
+        </div>
+    </div>
+    <script>
+        // Mock user storage (localStorage)
+        if (!localStorage.getItem('users')) {
+            localStorage.setItem('users', JSON.stringify([]));
+        }
+        // Mock student counts
+        const studentCounts = {
+            1: 27, // ส.ตอนที่1
+            2: 26, // ส.ตอนที่2
+            3: 26, // ส.ตอนที่3
+            4: 10  // ส.คอม
+        };
+
+        // เพิ่มตัวแปรยอดคงเหลือ (default = ยอดเดิม)
+        let remainCounts = { 1: studentCounts[1], 2: studentCounts[2], 3: studentCounts[3], 4: studentCounts[4] };
+
+        function showLogin() {
+            document.getElementById('login-page').classList.remove('hidden');
+            document.getElementById('register-page').classList.add('hidden');
+            document.getElementById('main-page').classList.add('hidden');
+            document.getElementById('login-error').textContent = '';
+            document.getElementById('register-error').textContent = '';
+        }
+        function showRegister() {
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('register-page').classList.remove('hidden');
+            document.getElementById('main-page').classList.add('hidden');
+            document.getElementById('login-error').textContent = '';
+            document.getElementById('register-error').textContent = '';
+        }
+        function showMain() {
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('register-page').classList.add('hidden');
+            document.getElementById('main-page').classList.remove('hidden');
+            // แสดงยอดเดิมและยอดคงเหลือ
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('orig'+i).textContent = studentCounts[i];
+                document.getElementById('remain'+i).value = remainCounts[i];
+                updateShortage(i, false);
+            }
+            updateSummary();
+        }
+
+        function updateShortage(idx, updateSum = true) {
+            const orig = studentCounts[idx];
+            const remain = parseInt(document.getElementById('remain'+idx).value) || 0;
+            remainCounts[idx] = remain;
+            const shortage = orig - remain;
+            document.getElementById('short'+idx).textContent = shortage >= 0 ? shortage : 0;
+            if (updateSum) updateSummary();
+        }
+
+        function updateSummary() {
+            let sumOrig = 0, sumRemain = 0, sumShort = 0;
+            for (let i = 1; i <= 4; i++) {
+                sumOrig += studentCounts[i];
+                sumRemain += remainCounts[i];
+                const shortage = studentCounts[i] - remainCounts[i];
+                sumShort += shortage >= 0 ? shortage : 0;
+            }
+            document.getElementById('sum-orig').textContent = sumOrig;
+            document.getElementById('sum-remain').textContent = sumRemain;
+            document.getElementById('sum-short').textContent = sumShort;
+        }
+
+        function login() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const users = JSON.parse(localStorage.getItem('users'));
+            const found = users.find(u => u.username === username && u.password === password);
+            if (found) {
+                localStorage.setItem('currentUser', username);
+                showMain();
+            } else {
+                document.getElementById('login-error').textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+            }
+        }
+        function register() {
+            const username = document.getElementById('register-username').value.trim();
+            const password = document.getElementById('register-password').value;
+            if (!username || !password) {
+                document.getElementById('register-error').textContent = 'กรุณากรอกข้อมูลให้ครบถ้วน';
+                return;
+            }
+            let users = JSON.parse(localStorage.getItem('users'));
+            if (users.find(u => u.username === username)) {
+                document.getElementById('register-error').textContent = 'มีชื่อผู้ใช้นี้แล้ว';
+                return;
+            }
+            users.push({ username, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            document.getElementById('register-error').textContent = 'ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบ';
+            setTimeout(showLogin, 1000);
+        }
+        function logout() {
+            localStorage.removeItem('currentUser');
+            showLogin();
+        }
+        // Auto-login if already logged in
+        window.onload = function() {
+            if (localStorage.getItem('currentUser')) {
+                showMain();
+            } else {
+                showLogin();
+            }
+        }
+    </script>
+</body>
+</html>
